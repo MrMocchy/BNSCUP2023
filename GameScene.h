@@ -25,6 +25,11 @@ public:
 		data.sky.draw(Arg::left = Palette::Skyblue, Arg::right = Palette::White);
 		data.sea.draw(Arg::left = Palette::Deepskyblue, Arg::right = Palette::White);
 		data.beach.draw(Arg::left = Palette::Orange, Arg::right = Palette::White);
+
+		for (auto human : data.people)
+		{
+			TextureAsset(U"face{}"_fmt(human.faceIndex)).resized(human.faceIndex<=10?data.faceSizeS:data.faceSizeL).drawAt(human.pos);
+		}
 	}
 };
 
