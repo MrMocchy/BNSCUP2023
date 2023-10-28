@@ -17,12 +17,17 @@ struct GameData {
 		Vec2 pos;
 		size_t faceIndex;
 		double waveOffset;
+		double drowningTime;
 	};
 	Array<Human> people;
 	const size_t peopleNum = 100;
 	size_t faceNum = 0;
+	// 絵文字のデザインによって異なる顔のサイズを揃えるための定数
 	double faceSizeS = 30.0;
 	double faceSizeL = 40.0;
+	//溺れ
+	size_t maxDrowningNum = 2;
+	double drownTime = 5.0;
 
 	GameData() {
 		// 顔文字の登録
@@ -36,7 +41,7 @@ struct GameData {
 		// 人の作成
 		for (auto i : step(faceNum))
 		{
-			people.push_back({ RandomVec2(sea), Random(faceNum-1), Random(0.0, 360.0_deg) });
+			people.push_back({ RandomVec2(sea), Random(faceNum-1), Random(0.0, 360.0_deg),0.0 });
 			//people.push_back({ Vec2(50*i,300), i, Random(0.0, 360.0_deg)});
 		}
 	}

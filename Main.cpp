@@ -6,6 +6,8 @@
 void Main()
 {
 
+	ScreenCapture::SetShortcutKeys({ KeyP });
+
 	App app;
 	app.add<GameScene>(U"Game");
 
