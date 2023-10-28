@@ -18,6 +18,7 @@ struct GameData {
 		size_t faceIndex;
 		double waveOffset;
 		double drowningTime;
+		bool isSaved = false;
 	};
 	Array<Human> people;
 	const size_t peopleNum = 100;
