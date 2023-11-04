@@ -8,7 +8,11 @@ void Main()
 
 	ScreenCapture::SetShortcutKeys({ KeyP });
 
+	FontAsset::Register(U"Large",100,Typeface::Bold);
+	FontAsset::Register(U"Medium", 50);
+
 	App app;
+	app.data.Init();
 
 	while (System::Update())
 	{

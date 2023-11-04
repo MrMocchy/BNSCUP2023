@@ -40,7 +40,17 @@ struct AppData {
 	//溺れ
 	size_t maxDrowningNum = 2;
 
-	AppData() {
+	void Init() {
+		ClearPrint();
+		isTitle = true;
+		isInGame = false;
+		isGameEnd = false;
+		isGameOver = false;
+		isGameClear = false;
+		viewX = 0;
+		effect.clear();
+		people.clear();
+
 		// 顔文字の登録
 		Array<String> faces{ U"👶",U"🧒",U"👦",U"👧",U"🧑",U"👨",U"🧔",U"👩",U"🧓",U"👴",U"👵",U"👨‍🦱",U"👱",U"👨‍🦰",U"👨‍🦳",U"👨‍🦲",U"👩‍🦰",U"🧑‍🦰",U"👩‍🦱",U"🧑‍🦱",U"👩‍🦳",U"🧑‍🦳",U"👩‍🦲",U"🧑‍🦲" };
 		for (auto i : step(faceNum))
@@ -83,7 +93,6 @@ struct AppData {
 			}
 
 			human.splash = Random(0.0, 1.0) < 0.5;
-			human.splash = true;
 
 			people.push_back(human);
 			//people.push_back({ Vec2(50*i,300), i, Random(0.0, 360.0_deg),0,5});

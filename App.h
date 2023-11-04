@@ -15,7 +15,7 @@ public:
 			* ((data.rightKey.pressed() ? 1 : 0) + (data.leftKey.pressed() ? -1 : 0));
 		
 		for (auto& human : data.people) {
-			if (human.drowningTime > 0)
+			if (human.drowningTime > 0 && not human.isSaved)
 			{
 				//溺れている人の溺れ時間を進める
 				human.drowningTime += Scene::DeltaTime();
@@ -28,7 +28,7 @@ public:
 
 			if (human.drowningTime > human.drownTime && (not human.isSaved && not human.isDead)) {
 				//ゲームオーバー画面へ遷移
-				Print << U"GameOver";
+				//Print << U"GameOver";
 				human.isDead = true;
 				data.isInGame = false;
 				data.isGameEnd = true;
@@ -46,7 +46,7 @@ public:
 			if (human.drowningTime == 0 || human.isSaved || human.isDead)continue;
 			//溺れている人の救助判定
 			if (MouseL.down() && (human.pos + Vec2(0, 10) * Math::Sin(human.waveOffset + Time::GetMillisec() / 1000.0) - Cursor::PosF()).length() < 40) {
-				Print << U"Saved";
+				//Print << U"Saved";
 				human.isSaved = true;
 			}
 		}
@@ -93,19 +93,39 @@ public:
 	}
 
 	void drawTitle() {
-		SimpleGUI::GetFont()(U"TITLE").drawAt(Scene::CenterF() - Vec2(0, 100), Palette::Black);
-		if (SimpleGUI::ButtonAt(U"START", Scene::CenterF() + Vec2(0, 100), 200, 50)) {
-			data.isTitle = false;
-			data.isInGame = true;
+		FontAsset(U"Large")(U"LIFEGUARD").drawAt(Scene::CenterF() - Vec2(0, 150), Palette::Orangered);
+		FontAsset(U"Large")(U"GAME").drawAt(Scene::CenterF() - Vec2(0, 50), Palette::Orangered);
+		auto startButton = RectF{ Arg::center = Scene::CenterF() + Vec2(0,100),SizeF{180,50} };
+		if (startButton.rounded(5).draw(Palette::White).drawFrame(2,Palette::Gray).mouseOver()) {
+			Cursor::RequestStyle(CursorStyle::Hand);
+			if(MouseL.down()) {
+				data.isTitle = false;
+				data.isInGame = true;
+			}
 		}
+		FontAsset(U"Medium")(U"START").drawAt(startButton.center(), Palette::Black);
+
 	}
 
 	void drawGameClear() {
-		SimpleGUI::GetFont()(U"GAME CLAER").drawAt(Scene::CenterF() - Vec2(0, 100), Palette::Green);
+		drawGameEnd(U"GAME CLEAR");
 	}
 
 	void drawGameOver() {
-		SimpleGUI::GetFont()(U"GAME OVER").drawAt(Scene::CenterF() - Vec2(0, 100), Palette::Red);
+		drawGameEnd(U"GAME OVER");
 	}
+
+	void drawGameEnd(String str) {
+		FontAsset(U"Large")(str).drawAt(Scene::CenterF() - Vec2(0, 100), Palette::Orangered);
+		auto titleButton = RectF{ Arg::center = Scene::CenterF() + Vec2(0,100),SizeF{180,50} };
+		if (titleButton.rounded(5).draw(Palette::White).drawFrame(2, Palette::Gray).mouseOver()) {
+			Cursor::RequestStyle(CursorStyle::Hand);
+			if (MouseL.down()) {
+				data.Init();
+			}
+		}
+		FontAsset(U"Medium")(U"TITLE").drawAt(titleButton.center(), Palette::Black);
+	}
+
 };
 
