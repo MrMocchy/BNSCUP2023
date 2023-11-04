@@ -1,16 +1,13 @@
 ﻿#pragma once
 
-class GameScene : public App::Scene
+class App
 {
 public:
-	GameScene(const InitData& init)
-		: IScene{ init }
-	{
-	}
 
-	void update() override
+	AppData data;
+
+	void update()
 	{
-		auto& data = getData();
 		Transformer2D transform(Mat3x2::Translate(-data.viewX, 0.0), TransformCursor::Yes);
 
 		//左右の視点移動
@@ -28,7 +25,7 @@ public:
 			}
 		}
 		//溺れている人数が最大人数より少ない場合、ランダムに人を溺れさせる
-		size_t drowningNum = data.people.count_if([](GameData::Human h) {return (not h.isSaved && not h.isDead) && h.drowningTime > 0; });
+		size_t drowningNum = data.people.count_if([](AppData::Human h) {return (not h.isSaved && not h.isDead) && h.drowningTime > 0; });
 		if (drowningNum < data.maxDrowningNum) {
 			data.people[Random(size_t(0),data.people.size()-1)].drowningTime += Scene::DeltaTime();
 		}
@@ -44,9 +41,8 @@ public:
 		}
 	}
 
-	void draw() const override
+	void draw()
 	{
-		auto& data = getData();
 		Transformer2D transform(Mat3x2::Translate(-data.viewX, 0.0),TransformCursor::Yes);
 
 		//背景描画

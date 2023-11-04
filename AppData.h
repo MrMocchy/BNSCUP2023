@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-struct GameData {
+struct AppData {
 	
 
 	Rect sky{ Arg::center = Point(600,50), 1200, 100};
@@ -32,7 +32,7 @@ struct GameData {
 	size_t maxDrowningNum = 2;
 	double drownTime = 5.0;
 
-	GameData() {
+	AppData() {
 		// 顔文字の登録
 		Array<String> faces{ U"👶",U"🧒",U"👦",U"👧",U"🧑",U"👨",U"🧔",U"👩",U"🧓",U"👴",U"👵",U"👨‍🦱",U"👱",U"👨‍🦰",U"👨‍🦳",U"👨‍🦲",U"👩‍🦰",U"🧑‍🦰",U"👩‍🦱",U"🧑‍🦱",U"👩‍🦳",U"🧑‍🦳",U"👩‍🦲",U"🧑‍🦲" };
 		faceNum = faces.size();
@@ -49,5 +49,3 @@ struct GameData {
 		}
 	}
 };
-
-using App = SceneManager<String, GameData>;
