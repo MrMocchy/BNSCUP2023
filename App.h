@@ -18,7 +18,7 @@ public:
 		for (auto& human : data.people) {
 			if (human.drowningTime > 0) human.drowningTime += Scene::DeltaTime();
 
-			if (human.drowningTime > data.drownTime && (not human.isSaved && not human.isDead)) {
+			if (human.drowningTime > human.drownTime && (not human.isSaved && not human.isDead)) {
 				//ゲームオーバー画面へ遷移
 				Print << U"GameOver";
 				human.isDead = true;
@@ -69,7 +69,7 @@ public:
 			}
 
 			TextureAsset(U"face{}"_fmt(human.faceIndex)).resized(human.faceIndex <= 10 ? data.faceSizeS : data.faceSizeL)
-				.drawAt(pos, ColorF{ 1.0,1.0,1.0,human.isSaved ? 1.0 : 1.0 - human.drowningTime / data.drownTime });
+				.drawAt(pos, ColorF{ 1.0,1.0,1.0,human.isSaved ? 1.0 : 1.0 - human.drowningTime / human.drownTime });
 
 			//浮き輪手前
 			if (human.isSaved)
