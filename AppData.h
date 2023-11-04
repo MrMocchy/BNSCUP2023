@@ -8,6 +8,8 @@ struct AppData {
 	bool isGameOver = false;
 	bool isGameClear = false;
 
+	Effect effect;
+
 	Rect sky{ Arg::center = Point(600,50), 1200, 100};
 	Rect sea{ Arg::center = Point(600, 250), 1200, 300 };
 	Rect beach{ Arg::center = Point(600,500), 1200, 200};
@@ -24,6 +26,7 @@ struct AppData {
 		double waveOffset;
 		double drowningTime;
 		double drownTime;
+		bool splash = false;
 		bool isSaved = false;
 		bool isDead = false;
 	};
@@ -44,6 +47,7 @@ struct AppData {
 		{
 			TextureAsset::Register(U"face{}"_fmt(i), Emoji{ faces[i] });
 		}
+		TextureAsset::Register(U"splash", Emoji{ U"💦" });
 
 		// 人の作成
 		for (auto i : step(peopleNum))
@@ -77,10 +81,31 @@ struct AppData {
 				human.drownTime = 15.0;
 				break;
 			}
-			human.drownTime = Random(0.0, 10.0);
+
+			human.splash = Random(0.0, 1.0) < 0.5;
+			human.splash = true;
 
 			people.push_back(human);
 			//people.push_back({ Vec2(50*i,300), i, Random(0.0, 360.0_deg),0,5});
 		}
 	}
+};
+
+struct SplashEffect : IEffect {
+	double duration = 1.0;
+	double size = 0.3;
+	double angle = 0.0;
+	Vec2 pos;
+
+	explicit SplashEffect(const Vec2& _pos) :
+		pos(_pos) {
+		angle = Random(0.0, 360.0_deg);
+	}
+
+	bool update(double t) override {
+		size = size * (duration - t/5);
+		TextureAsset(U"splash").scaled(size).rotated(angle).drawAt(pos);
+		return t < duration;
+	}
+
 };

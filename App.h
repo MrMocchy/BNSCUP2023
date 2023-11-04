@@ -13,10 +13,18 @@ public:
 		//左右の視点移動
 		data.viewX += data.viewScrollSpeed * Scene::DeltaTime()
 			* ((data.rightKey.pressed() ? 1 : 0) + (data.leftKey.pressed() ? -1 : 0));
-
-		//溺れている人の溺れ時間を進める
+		
 		for (auto& human : data.people) {
-			if (human.drowningTime > 0) human.drowningTime += Scene::DeltaTime();
+			if (human.drowningTime > 0)
+			{
+				//溺れている人の溺れ時間を進める
+				human.drowningTime += Scene::DeltaTime();
+
+				//水しぶきのエフェクト作成
+				if (human.splash && human.drowningTime*2 - Floor(human.drowningTime*2) < Scene::DeltaTime()*2) {
+					data.effect.add<SplashEffect>(human.pos+RandomVec2()*20);
+				}
+			}
 
 			if (human.drowningTime > human.drownTime && (not human.isSaved && not human.isDead)) {
 				//ゲームオーバー画面へ遷移
@@ -80,6 +88,8 @@ public:
 				}
 			}
 		}
+
+		data.effect.update();
 	}
 
 	void drawTitle() {
