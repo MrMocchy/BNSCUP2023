@@ -22,6 +22,9 @@ public:
 				//ゲームオーバー画面へ遷移
 				Print << U"GameOver";
 				human.isDead = true;
+				data.isInGame = false;
+				data.isGameEnd = true;
+				data.isGameOver = true;
 			}
 		}
 		//溺れている人数が最大人数より少ない場合、ランダムに人を溺れさせる
@@ -77,6 +80,22 @@ public:
 				}
 			}
 		}
+	}
+
+	void drawTitle() {
+		SimpleGUI::GetFont()(U"TITLE").drawAt(Scene::CenterF() - Vec2(0, 100), Palette::Black);
+		if (SimpleGUI::ButtonAt(U"START", Scene::CenterF() + Vec2(0, 100), 200, 50)) {
+			data.isTitle = false;
+			data.isInGame = true;
+		}
+	}
+
+	void drawGameClear() {
+		SimpleGUI::GetFont()(U"GAME CLAER").drawAt(Scene::CenterF() - Vec2(0, 100), Palette::Green);
+	}
+
+	void drawGameOver() {
+		SimpleGUI::GetFont()(U"GAME OVER").drawAt(Scene::CenterF() - Vec2(0, 100), Palette::Red);
 	}
 };
 

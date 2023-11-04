@@ -12,8 +12,13 @@ void Main()
 
 	while (System::Update())
 	{
-		app.update();
+
+		if (app.data.isInGame) app.update();
 
 		app.draw();
+
+		if (app.data.isTitle) app.drawTitle();
+		if (app.data.isGameClear) app.drawGameClear();
+		if (app.data.isGameOver) app.drawGameOver();
 	}
 }

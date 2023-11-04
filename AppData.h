@@ -1,7 +1,12 @@
 ﻿#pragma once
 
 struct AppData {
-	
+
+	bool isTitle = true;
+	bool isInGame = false;
+	bool isGameEnd = false;
+	bool isGameOver = false;
+	bool isGameClear = false;
 
 	Rect sky{ Arg::center = Point(600,50), 1200, 100};
 	Rect sea{ Arg::center = Point(600, 250), 1200, 300 };
