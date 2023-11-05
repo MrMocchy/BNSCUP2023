@@ -16,8 +16,8 @@ void Main()
 
 	while (System::Update())
 	{
-
-		if (app.data.isInGame) app.update();
+		app.commonUpdate();
+		if (app.data.isInGame) app.gameUpdate();
 
 		app.draw();
 

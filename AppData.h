@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 struct AppData {
+	bool init = false;
 
 	bool isTitle = true;
 	bool isInGame = false;
@@ -10,9 +11,9 @@ struct AppData {
 
 	Effect effect;
 
-	Rect sky{ Arg::center = Point(600,50), 1200, 100};
-	Rect sea{ Arg::center = Point(600, 250), 1200, 300 };
-	Rect beach{ Arg::center = Point(600,500), 1200, 200};
+	RectF sky{ Arg::center = Point(600,50), 1200, 100};
+	RectF sea{ Arg::center = Point(600, 250), 1200, 300 };
+	RectF beach{ Arg::center = Point(600,500), 1200, 200};
 
 	double viewX = 0.0;
 
@@ -40,6 +41,14 @@ struct AppData {
 	//溺れ
 	size_t maxDrowningNum = 2;
 
+	struct Parasol{
+		Vec2 pos;
+		double angle;
+		ColorF color;
+	};
+	Array<Parasol> parasols;
+	Array<Vec2> crabs;
+
 	void Init() {
 		ClearPrint();
 		isTitle = true;
@@ -50,20 +59,26 @@ struct AppData {
 		viewX = 0;
 		effect.clear();
 		people.clear();
+		parasols.clear();
+		crabs.clear();
 
-		// 顔文字の登録
-		Array<String> faces{ U"👶",U"🧒",U"👦",U"👧",U"🧑",U"👨",U"🧔",U"👩",U"🧓",U"👴",U"👵",U"👨‍🦱",U"👱",U"👨‍🦰",U"👨‍🦳",U"👨‍🦲",U"👩‍🦰",U"🧑‍🦰",U"👩‍🦱",U"🧑‍🦱",U"👩‍🦳",U"🧑‍🦳",U"👩‍🦲",U"🧑‍🦲" };
-		for (auto i : step(faceNum))
-		{
-			TextureAsset::Register(U"face{}"_fmt(i), Emoji{ faces[i] });
+		if (not init) {
+			init = true;
+			// 顔文字の登録
+			Array<String> faces{ U"👶",U"🧒",U"👦",U"👧",U"🧑",U"👨",U"🧔",U"👩",U"🧓",U"👴",U"👵",U"👨‍🦱",U"👱",U"👨‍🦰",U"👨‍🦳",U"👨‍🦲",U"👩‍🦰",U"🧑‍🦰",U"👩‍🦱",U"🧑‍🦱",U"👩‍🦳",U"🧑‍🦳",U"👩‍🦲",U"🧑‍🦲" };
+			for (auto i : step(faceNum))
+			{
+				TextureAsset::Register(U"face{}"_fmt(i), Emoji{ faces[i] });
+			}
+			TextureAsset::Register(U"splash", Emoji{ U"💦" });
+			TextureAsset::Register(U"crab", Emoji{ U"🦀" });
 		}
-		TextureAsset::Register(U"splash", Emoji{ U"💦" });
 
 		// 人の作成
 		for (auto i : step(peopleNum))
 		{
 			Human human;
-			human.pos = RandomVec2(sea);
+			human.pos = RandomVec2(RectF{ Arg::center = sea.center(), SizeF{sea.w - 50, sea.h - 50} });
 			human.faceIndex = Random(faceNum - 1);
 			human.waveOffset = Random(0.0, 360.0_deg);
 			human.drowningTime = 0;
@@ -97,6 +112,15 @@ struct AppData {
 			people.push_back(human);
 			//people.push_back({ Vec2(50*i,300), i, Random(0.0, 360.0_deg),0,5});
 		}
+
+		for (auto i : step(5)) {
+			RectF r = beach;
+			r.h /= 2;
+			parasols.push_back({RandomVec2(r), Random(-20_deg,20_deg), RandomColorF()});
+		}
+		for (auto i : step(10)) {
+			crabs.push_back(RandomVec2(beach));
+		}
 	}
 };
 
@@ -118,3 +142,14 @@ struct SplashEffect : IEffect {
 	}
 
 };
+
+void drawParasol(Vec2 pos, double angle, ColorF color) {
+	//影の描画
+	Ellipse{ pos + Vec2{0, 100}, 30,10 }.draw(ColorF{0,0.5});
+	// 柄の描画
+	Line{ pos, pos + Vec2{0, 100}.rotated(angle) }.draw(5, Palette::White);
+	// 傘の描画
+	for (auto i : step(7)) {
+		Circle{ pos, 50 }.drawPie(110_deg + angle + 20_deg * i, 20_deg, i % 2 == 0 ? color : ColorF{ 1 });
+	}
+}

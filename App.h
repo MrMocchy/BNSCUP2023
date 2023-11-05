@@ -6,13 +6,19 @@ public:
 
 	AppData data;
 
-	void update()
+	void commonUpdate()
 	{
 		Transformer2D transform(Mat3x2::Translate(-data.viewX, 0.0), TransformCursor::Yes);
 
 		//左右の視点移動
 		data.viewX += data.viewScrollSpeed * Scene::DeltaTime()
 			* ((data.rightKey.pressed() ? 1 : 0) + (data.leftKey.pressed() ? -1 : 0));
+		data.viewX = Clamp(data.viewX, 0.0, data.sea.w - Scene::Width());
+	}
+
+	void gameUpdate()
+	{
+		Transformer2D transform(Mat3x2::Translate(-data.viewX, 0.0), TransformCursor::Yes);
 		
 		for (auto& human : data.people) {
 			if (human.drowningTime > 0 && not human.isSaved)
@@ -59,7 +65,7 @@ public:
 		//背景描画
 		data.sky.draw(Palette::Skyblue);
 		data.sea.draw(Palette::Deepskyblue);
-		data.beach.draw(Palette::Orange);
+		data.beach.draw(Palette::Antiquewhite);
 
 		//人描画
 		for (auto& human : data.people)
@@ -72,7 +78,7 @@ public:
 			{
 				Transformer2D t(Mat3x2::Scale(1, 0.6,pos));
 				for (auto i : step(4)) {
-					Circle{ pos,data.swimRingSize }.drawArc(-90_deg + 45_deg * i, 45_deg,data.swimRingSize / 3, 0, i % 2 == 0 ? Palette::White : Palette::Red);
+					Circle{ pos + Vec2(0,5),data.swimRingSize}.drawArc(-90_deg + 45_deg * i, 45_deg, data.swimRingSize / 3, 0, i % 2 == 0 ? Palette::White : Palette::Red);
 				}
 			}
 
@@ -84,12 +90,21 @@ public:
 			{
 				Transformer2D t(Mat3x2::Scale(1, 0.6, pos));
 				for (auto i : step(4)) {
-					Circle{ pos,data.swimRingSize }.drawArc(+90_deg + 45_deg * i, 45_deg, data.swimRingSize / 3, 0, i % 2 == 0 ? Palette::White : Palette::Red);
+					Circle{ pos + Vec2(0,5),data.swimRingSize }.drawArc(+90_deg + 45_deg * i, 45_deg, data.swimRingSize / 3, 0, i % 2 == 0 ? Palette::White : Palette::Red);
 				}
 			}
 		}
 
+		//水しぶきの描画
 		data.effect.update();
+
+		for (auto c : data.crabs) {
+			TextureAsset(U"crab").scaled(0.2).drawAt(c);
+		}
+		//パラソル描画
+		for (auto& p : data.parasols) {
+			drawParasol(p.pos,p.angle,p.color);
+		}
 	}
 
 	void drawTitle() {
