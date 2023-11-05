@@ -14,8 +14,12 @@ struct AppData {
 	RectF sky{ Arg::center = Point(600,50), 1200, 100};
 	RectF sea{ Arg::center = Point(600, 250), 1200, 300 };
 	RectF beach{ Arg::center = Point(600,500), 1200, 200};
+	RectF wave{ Arg::center = Point(600, 400), 1200, 100 };
 
-	double viewX = 0.0;
+	double viewX = 200.0;
+
+	Stopwatch gameTimer;
+	int gameClearTime = 30;
 
 	InputGroup rightKey = InputGroup{ KeyRight, KeyD };
 	InputGroup leftKey = InputGroup{ KeyLeft, KeyA };
@@ -56,7 +60,7 @@ struct AppData {
 		isGameEnd = false;
 		isGameOver = false;
 		isGameClear = false;
-		viewX = 0;
+		viewX = 200;
 		effect.clear();
 		people.clear();
 		parasols.clear();
@@ -107,7 +111,7 @@ struct AppData {
 				break;
 			}
 
-			human.splash = Random(0.0, 1.0) < 0.5;
+			human.splash = Random(0.0, 1.0) < 0.3;
 
 			people.push_back(human);
 			//people.push_back({ Vec2(50*i,300), i, Random(0.0, 360.0_deg),0,5});

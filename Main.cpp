@@ -20,6 +20,8 @@ void Main()
 		if (app.data.isInGame) app.gameUpdate();
 
 		app.draw();
+		if (app.data.isInGame) FontAsset(U"Medium")(app.data.gameClearTime - app.data.gameTimer.s()).drawAt(Vec2(400, 50), Palette::Black);
+
 
 		if (app.data.isTitle) app.drawTitle();
 		if (app.data.isGameClear) app.drawGameClear();
